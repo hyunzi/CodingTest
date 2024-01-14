@@ -1,81 +1,76 @@
 package com.example.codingtest;
 
-import java.util.ArrayDeque;
-import java.util.Arrays;
-public class W2CoinChange {
+import java.util.*;
 
-    /* Site URL: https://leetcode.com/problems/coin-change */
-    public static int coinChange(int[] coins, int amount) {
+public class W2SheepAndWolf {
 
-        //amount 보다 작은 동전으로, 큰 수부터 빼면 되지 않나
-        //[1,2,3], 17 이라면? 17-3-3-3-3-3-2
-        //이걸 탐욕법이라고 하는데, 이는 이 경우에 어울리지 않음. 앞의 선택 조건이 뒤에 영향을 미침
-        //제약조건을 보고, 2^31-1 은 int 안에 담을 수 있겠다~ 이런걸 생각해야함
+    /* Site URL: https://school.programmers.co.kr/learn/courses/30/lessons/92343 */
+    public static int sheep = 0;
+    public static int wolf = 0;
 
-        Arrays.sort(coins);
-        int startIndex = 0;
-        for (int i = coins.length-1; i >= 0; i--) {
-            if (amount >= coins[i]) {
-                startIndex = i;
-                break;
+    public static int sheepAndWolf(int[] info, int[][] edge) {
+
+        // 1. 백트래킹을 이용한 완전탐색을 해야할 듯
+        // 2. 주어진 배열을 인접리스트로 바꿈
+        // [0]: [1,8]
+        // [1]: [4,2]
+        // [2]: [9,7] 이런 식으로...
+        // 인접리스트를 내려가면서, 양 > 늑대일 때만 다음을 탐색
+
+        //[[0,1],[1,2],[1,4],[0,8],[8,7],[9,10],[9,11],[4,3],[6,5],[4,6],[8,9]]
+        //{0=[1, 8], 1=[2, 4], 4=[3, 6], 6=[5], 8=[7, 9], 9=[10, 11]} 로 변환
+        Map<Integer, List<Integer>> list = new HashMap<>();
+        for (int[] arr : edge) {
+            if (list.get(arr[0]) == null) {
+                list.put(arr[0], new ArrayList<>());
+            }
+            list.get(arr[0]).add(arr[1]);
+        }
+
+
+
+        boolean[] visited = new boolean[info.length];
+        for (int i = 0; i < visited.length; i++) {
+            if (visited[i] == false) {
+                backtracking(i, info, list, visited);
             }
         }
 
-        int count = 0;
-        while (amount >= 0 && startIndex >= 0) {
-            if (amount >= coins[startIndex]) {
-                System.out.println(amount+","+coins[startIndex]);
-                amount -= coins[startIndex];
-                count++;
-            } else if (amount < coins[startIndex]) {
-                //System.out.println(amount+","+coins[startIndex]);
-                //amount += coins[startIndex];
-                startIndex--;
-            } else {
-                startIndex--;
-            }
-        }
-
-        return (amount == 0) ? count : -1;
+        System.out.println("sheep:"+sheep+"/visited:"+Arrays.toString(visited));
+        return sheep;
     }
 
-    public static int newCoinChange(int[] coins, int amount) {
-        //[1,4,5] 12
-        //12 부터 시작해서 -1, -4, -5
-        //11,1,4,5 이걸 다시 돌면서 -1, -4, -5
-        //10,7,6,0,X,X, 여기서 0을 만나보림!
+    public static void backtracking(int index, int[] info, Map<Integer, List<Integer>> list, boolean[] visited) {
 
-        //[2,4,7] 25
-        //23,21,18 을 돌면서 -2,-4,-7
-        //21,19,16 / 19,17,14 / 16,14,11 그다음 이걸 다시 돌면서!
-        // 하니씩~~ 0을 찾을 떄까지!!
-
-        int count = 0;
-        ArrayDeque<Integer> list = new ArrayDeque<>();
-
-        list.add(amount);
-        while (!list.isEmpty()) {
-            amount = list.getFirst();
-            for (int c : coins) {
-                int diff = amount - c;
-                if (diff > 0) {
-                    list.add(diff);
-                } else if (diff < 0) {
-                    //System.out.println("마이너스: " + diff);
-                } else {
-                    //0일 때
-                    return count;
-                }
+        visited[index] = true;
+        if (info[index] == 0) {
+            sheep++;
+            System.out.println(index+"양이다!");
+        } else {
+            System.out.println(index+"늑대다!");
+            if (list.get(index) == null || sheep <= wolf) {
+                return;
+            } else {
+                wolf++;
             }
-            count++;
-            list.remove(amount);
-            System.out.println(list);
         }
+        System.out.println("sheep: "+sheep +", wolf:"+wolf);
 
-        return -1;
+        if (list.get(index) == null) {
+            return;
+        } else {
+            //더 진행해
+            for (int i : list.get(index)) {
+                backtracking(i, info, list, visited);
+            }
+        }
     }
 
     public static void main(String[] args) {
-        System.out.println("결과: "+newCoinChange(new int[]{3,4,5}, 10));
+        sheepAndWolf(new int[]{0,0,1,1,1,0,1,0,1,0,1,1}, new int[][]{{0,1},{1,2},{1,4},{0,8},{8,7},{9,10},{9,11},{4,3},{6,5},{4,6},{8,9}});
+        sheep = 0;
+        wolf = 0;
+        System.out.println("-------------------------");
+        sheepAndWolf(new int[]{0,1,0,1,1,0,1,0,0,1,0}, new int[][]{{0,1},{0,2},{1,3},{1,4},{2,5},{2,6},{3,7},{4,8},{6,9},{9,10}});
     }
 }

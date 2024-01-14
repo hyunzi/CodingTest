@@ -2,7 +2,9 @@ package com.example.codingtest;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
-public class HelloApplication {
+public class W2CoinChange {
+
+    /* Site URL: https://leetcode.com/problems/coin-change */
     public static int coinChange(int[] coins, int amount) {
 
         //amount 보다 작은 동전으로, 큰 수부터 빼면 되지 않나
