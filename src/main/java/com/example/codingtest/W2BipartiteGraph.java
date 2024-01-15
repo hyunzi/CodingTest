@@ -15,14 +15,19 @@ public class W2BipartiteGraph {
         //노드 0에서 시작, visited[]에 진행할 노드의 색을 바꾼다
         //그 다음 노드는!
         String[] visited = new String[graph.length];
-        boolean result = bfs(0, graph, visited, "red", true);
+        bfs(0, graph, visited, "red");
         System.out.println(Arrays.toString(visited));
-        System.out.println(result);
 
+        boolean result = true;
+        for (int i = 1; i < visited.length; i++) {
+            if (visited[i] == null) result = false;
+            if (visited[i-1] == visited[i]) result = false;
+        }
+        System.out.println(result);
         return result;
     }
 
-    public static boolean bfs(int currNode, int[][] graph, String[] visited, String type, boolean result) {
+    public static void bfs(int currNode, int[][] graph, String[] visited, String type) {
 
         visited[currNode] = type;
         for(int nextNode : graph[currNode]) {
@@ -30,25 +35,24 @@ public class W2BipartiteGraph {
                 //이미 방문했던 노드
                 if (visited[nextNode].equals(type)) {
                     //바꿀 색이랑 같으면? 정상
-                    result = true;
+                    return;
                 } else {
-                    result = false;
+                    // 여기서 리턴!!
                     //바꿀 색이랑 다르면? 이분그래프 안됨
                 }
             } else {
                 //방문하지 않은 노드
                 type = (type == "red") ? "blue" : "red"; //반대의 타입을 넣어줌
-                result = bfs(nextNode, graph, visited, type, result);
+                bfs(nextNode, graph, visited, type);
             }
-
         }
-
-        return result;
     }
 
     public static void main(String[] args) {
 
+        isBipartite(new int[][]{{1,2},{0,2},{0,1}});
         isBipartite(new int[][]{{4,1},{0,2},{1,3},{2,4},{3,0}});
         isBipartite(new int[][]{{1,2,3},{0,2},{0,1,3},{0,2}});
+        isBipartite(new int[][]{{1,3},{0,2},{1,3},{0,2}});
     }
 }
