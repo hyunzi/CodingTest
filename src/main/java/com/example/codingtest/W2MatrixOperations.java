@@ -6,13 +6,13 @@ import java.util.Arrays;
 
 public class W2MatrixOperations {
 
-                public static int[][] solution(int[][] rc, String[] operations) {
-                    int[][] answer = {};
+        public static int[][] solution(int[][] rc, String[] operations) {
+            int[][] answer = {};
 
-                    for (String s : operations) {
-                        if (s.equals("ShiftRow")) {
-                            answer = shiftRow(rc);
-                        } else if (s.equals("Rotate")) {
+            for (String s : operations) {
+                if (s.equals("ShiftRow")) {
+                    answer = shiftRow(rc);
+                } else if (s.equals("Rotate")) {
                 answer = rotate(rc);
             }
             print(answer);
