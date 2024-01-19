@@ -74,3 +74,5 @@ public class W3MovingBlock {
 
     }
 }
+
+// 그.. 현지님 바보
