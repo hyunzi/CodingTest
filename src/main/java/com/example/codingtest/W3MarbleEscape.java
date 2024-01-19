@@ -49,16 +49,17 @@ public class W3MarbleEscape {
         boolean[][] blueVisited = new boolean[rowLength][colLength];
         boolean redFlag = false;
         boolean blueFlag = false;
-        System.out.println(Arrays.toString(red));
-        System.out.println(Arrays.toString(blue));
+        /*System.out.println(Arrays.toString(red));
+        System.out.println(Arrays.toString(blue));*/
 
         redVisited[red[0]][red[1]] = true;
         blueVisited[blue[0]][blue[1]] = true;
-        while (count < 10) {
+        while (count < 10 && !blueFlag && !redFlag ) {
             for (int i = 0; i < dr.length; i++) {
                 int redR = red[0] + dr[i];
                 int redC = red[1] + dc[i];
                 if (redR > 0 && redR < graph.length-1 && redC > 0 && redC < graph[0].length) {
+
                     if (graph[redR][redC] == '.' && !redVisited[redR][redC]) {
                         //이동할 방향을 찾았음
                         while (graph[redR][redC] == '.') {
@@ -72,9 +73,7 @@ public class W3MarbleEscape {
                         int blueR = blue[0] + dr[i];
                         int blueC = blue[1] + dc[i];
                         if (blueR > 0 && blueR < graph.length-1 && blueC > 0 && blueC < graph[0].length) {
-                            while ((graph[blueR][blueC] == '.' || graph[blueR][blueC] == 'R')
-                                && !(blueR==red[0] && blueC==red[1])
-                            ) {
+                            while (graph[blueR][blueC] != '#' && !(blueR==red[0] && blueC==red[1])) {
                                 blueVisited[blueR][blueC] = true;
                                 blueR = blueR + dr[i];
                                 blueC = blueC + dc[i];
@@ -83,19 +82,17 @@ public class W3MarbleEscape {
                         }
                          blue[0] = blueR-dr[i]; blue[1] = blueC-dc[i];
 
-                        System.out.println("red: "+Arrays.toString(red));
-                        System.out.println("blue: "+Arrays.toString(blue));
+                        /*System.out.println("red: "+Arrays.toString(red));
+                        System.out.println("blue: "+Arrays.toString(blue));*/
 
                         if (graph[redR][redC] == 'O') {
-                            System.out.println("레드 도달!!");
+                            //System.out.println("레드 도달!!");
                             redFlag = true;
                         }
-                        System.out.println("eee");
                         if (graph[blueR][blueC] == 'O') {
-                            System.out.println("블루 도달!!");
+                            //System.out.println("블루 도달!!");
                             blueFlag = true;
                         }
-                        System.out.println("aaa");
                         count++;
                         break;
                     }
@@ -104,7 +101,7 @@ public class W3MarbleEscape {
         }
         int result = 0;
         if (!blueFlag && redFlag) result = 1;
-        System.out.println("result: "+result);
+        System.out.println(result);
 
     }
 }
