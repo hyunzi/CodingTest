@@ -1,7 +1,6 @@
 package com.example.codingtest;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class W3MovingBlock {
 
@@ -18,6 +17,11 @@ public class W3MovingBlock {
 
 
         int[][] bot = new int[][]{{0,0},{0,1},{0}};
+        int m = board.length-1;
+        int[] xRow = {0,0,-1,1,-1,1};   //좌,우,A기준상,A기준하,B기준상,B기준하 --가로로봇
+        int[] xCol = {-1,1,-1,-1,1,1};  //좌,우,A기준상,A기준하,B기준상,B기준하 --가로로봇
+        int[] yRow = {-1,1,-1,-1,1,1};  //상,하,A기준좌,A기준우,B기준좌,B기준우 --세로로봇
+        int[] yCol = {0,0,-1,1,-1,1};   //상,하,A기준좌,A기준우,B기준좌,B기준우 --세로로봇
 
         ArrayList<String> visited = new ArrayList<String>();
         visited.add(Arrays.toString(bot[0]) + Arrays.toString(bot[1]));
@@ -26,32 +30,36 @@ public class W3MovingBlock {
         queue.add(bot);
 
         while (!queue.isEmpty()) {
-            System.out.print("queue: ");
+            /*System.out.print("queue: ");
             for (int[][] q : queue)
                 System.out.print(Arrays.toString(q[0])+","+Arrays.toString(q[1])+","+Arrays.toString(q[2])+" -> ");
-            System.out.println();
+            System.out.println();*/
 
             int[][] currBot = queue.poll();
             int[][] nextBot = new int[currBot.length][currBot[0].length];
 
-            int[] xRow = {0,0,-1,1,-1,1};   //좌,우,A기준상,A기준하,B기준상,B기준하 --가로로봇
-            int[] xCol = {-1,1,-1,-1,1,1};  //좌,우,A기준상,A기준하,B기준상,B기준하 --가로로봇
-            int[] yRow = {-1,1,-1,-1,1,1};  //상,하,A기준좌,A기준우,B기준좌,B기준우 --세로로봇
-            int[] yCol = {0,0,-1,1,-1,1};   //상,하,A기준좌,A기준우,B기준좌,B기준우 --세로로봇
+            if ((currBot[0][0] == m && currBot[0][1] == m) || (currBot[1][0] == m && currBot[1][1] == m)) {
+                answer = currBot[2][0];
+                break;
+            }
 
+            if (currBot[1][1] < currBot[0][1] || currBot[1][0] < currBot[0][0]) {
+                int[][] tmpBot = new int[][]{{currBot[1][0], currBot[1][1]},{currBot[0][0],currBot[0][1]},{currBot[2][0]}};
+                currBot = new int[][]{{tmpBot[0][0], tmpBot[0][1]},{tmpBot[1][0],tmpBot[1][1]},{tmpBot[2][0]}};
+            }
 
             for (int k = 0; k < xRow.length; k++) {
                 if (isUpDownBot(currBot)) {
                     if (k == 2 || k == 3) { //B가 움직임
-                        nextBot[0][0] = currBot[0][1] < currBot[1][1] ? currBot[0][0] : currBot[1][0];
-                        nextBot[0][1] = currBot[0][1] < currBot[1][1] ? currBot[0][1] : currBot[1][1];
-                        nextBot[1][0] = currBot[0][1] < currBot[1][1] ? currBot[1][0] + yRow[k] : currBot[0][0] + yRow[k]; // 아래에 있는 봇의 row
-                        nextBot[1][1] = currBot[0][1] < currBot[1][1] ? currBot[1][1] + yCol[k] : currBot[0][1] + yCol[k]; // 아래에 있는 봇의 col
+                        nextBot[0][0] = currBot[0][0];
+                        nextBot[0][1] = currBot[0][1];
+                        nextBot[1][0] = currBot[1][0] + yRow[k]; // 아래에 있는 봇의 row
+                        nextBot[1][1] = currBot[1][1] + yCol[k]; // 아래에 있는 봇의 col
                     } else if (k == 4 || k == 5) { //A가 움직임
-                        nextBot[0][0] = currBot[0][1] < currBot[1][1] ? currBot[0][0] + yRow[k] : currBot[1][0] + yRow[k]; // 위에 있는 봇의 row
-                        nextBot[0][1] = currBot[0][1] < currBot[1][1] ? currBot[0][1] + yCol[k] : currBot[1][1] + yCol[k]; // 위에 있는 봇의 col
-                        nextBot[1][0] = currBot[0][1] < currBot[1][1] ? currBot[1][0] : currBot[0][0];
-                        nextBot[1][1] = currBot[0][1] < currBot[1][1] ? currBot[1][1] : currBot[0][1];
+                        nextBot[0][0] = currBot[0][0] + yRow[k]; // 위에 있는 봇의 row
+                        nextBot[0][1] = currBot[0][1] + yCol[k]; // 위에 있는 봇의 col
+                        nextBot[1][0] = currBot[1][0];
+                        nextBot[1][1] = currBot[1][1];
                     } else {
                         nextBot[0][0] = currBot[0][0] + yRow[k]; // 위에 있는 봇의 row
                         nextBot[0][1] = currBot[0][1] + yCol[k]; // 위에 있는 봇의 col
@@ -60,15 +68,15 @@ public class W3MovingBlock {
                     }
                 } else {
                     if (k == 2 || k == 3) { //B가 움직임
-                        nextBot[0][0] = currBot[0][1] < currBot[1][1] ? currBot[0][0] : currBot[1][0];
-                        nextBot[0][1] = currBot[0][1] < currBot[1][1] ? currBot[0][1] : currBot[1][1];
-                        nextBot[1][0] = currBot[0][1] < currBot[1][1] ? currBot[1][0] + xRow[k] : currBot[0][0] + xRow[k] ; // 오른쪽에 있는 봇의 row
-                        nextBot[1][1] = currBot[0][1] < currBot[1][1] ? currBot[1][1] + xCol[k] : currBot[0][1] + xCol[k] ; // 오른쪽에 있는 봇의 col
+                        nextBot[0][0] = currBot[0][0];
+                        nextBot[0][1] = currBot[0][1];
+                        nextBot[1][0] = currBot[1][0] + xRow[k]; // 오른쪽에 있는 봇의 row
+                        nextBot[1][1] = currBot[1][1] + xCol[k]; // 오른쪽에 있는 봇의 col
                     } else if (k == 4 || k == 5) { //A가 움직임
-                        nextBot[0][0] = currBot[0][1] < currBot[1][1] ? currBot[0][0] + xRow[k] : currBot[1][0] + xRow[k]; // 왼쪽에 있는 봇의 row
-                        nextBot[0][1] = currBot[0][1] < currBot[1][1] ? currBot[0][1] + xCol[k] : currBot[1][1] + xCol[k]; // 왼쪽에 있는 봇의 col
-                        nextBot[1][0] = currBot[0][1] < currBot[1][1] ? currBot[1][0] : currBot[0][0];
-                        nextBot[1][1] = currBot[0][1] < currBot[1][1] ? currBot[1][1] : currBot[0][1];
+                        nextBot[0][0] = currBot[0][0] + xRow[k]; // 왼쪽에 있는 봇의 row
+                        nextBot[0][1] = currBot[0][1] + xCol[k]; // 왼쪽에 있는 봇의 col
+                        nextBot[1][0] = currBot[1][0];
+                        nextBot[1][1] = currBot[1][1];
                     } else {
                         nextBot[0][0] = currBot[0][0] + xRow[k]; // 왼쪽에 있는 봇의 row
                         nextBot[0][1] = currBot[0][1] + xCol[k]; // 왼쪽에 있는 봇의 col
@@ -113,13 +121,13 @@ public class W3MovingBlock {
 
     public static void main(String args[]) {
 
-        solution(new int[][]{
+        int result = solution(new int[][]{
             {0, 0, 0, 1, 1},
             {0, 0, 0, 1, 0},
             {0, 1, 0, 1, 1},
             {1, 1, 0, 0, 1},
             {0, 0, 0, 0, 0}
         });
-
+        System.out.println(result);
     }
 }
