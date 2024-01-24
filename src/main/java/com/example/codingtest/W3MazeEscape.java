@@ -1,5 +1,7 @@
 package com.example.codingtest;
 
+import java.util.stream.IntStream;
+
 public record W3MazeEscape() {
 
     public static String solution(int n, int m, int x, int y, int r, int c, int k) {
@@ -58,17 +60,17 @@ public record W3MazeEscape() {
 
         //그 다음 남은 거리는 사전순서인 dlru 순서로 이동해야함
         //해설코드에서 IntStream.range()를 사용했는데 아주 유용해보임!!!
-        if (x > r) {
-            sb.append('d');
+        if (x < r) {
+            IntStream.range(0, r - x).forEach(i -> sb.append('d'));
         }
         if (y > c) {
-            sb.append('l');
+            IntStream.range(0, y - c).forEach(i -> sb.append('l'));
         }
         if (y < c) {
-            sb.append('r');
+            IntStream.range(0, c - y).forEach(i -> sb.append('r'));
         }
-        if (x < r) {
-            sb.append('u');
+        if (x > r) {
+            IntStream.range(0, x - r).forEach(i -> sb.append('u'));
         }
 
         answer = sb.toString();
