@@ -1,6 +1,7 @@
 package com.example.codingtest;
 
 import java.util.ArrayDeque;
+import java.util.Arrays;
 
 public class W3Minesweeper {
     public static char[][] updateBoard(char[][] board, int[] click) {
@@ -30,87 +31,107 @@ public class W3Minesweeper {
             //탐색하는 좌표에 숫자 또는 B를 채워야함
             //탐색하는 좌표 주변에 지뢰가 있으면 그 갯수를, 없으면 B를
             //8방향 확인을 BFS로 하기
-            checkXY(x,y,board);
+
+            boolean[][] visited = new boolean[m][n];
+            checkXY(x, y, visited, board);
         }
 
         return board;
     }
 
     //상,하,좌,우,좌상,좌하,우하,우상
-    static int[][] rcList = new int[][]{{-1,0},{1,0},{0,-1},{0,1},{-1,-1},{-1,1},{1,1},{-1,1}};
-    public static int checkXY(int x, int y, char[][] board) {
+    static int[][] rcList = new int[][]{{-1,0},{1,0},{0,-1},{0,1},{-1,-1},{-1,1},{1,1},{1,-1}};
+    public static void checkXY(int x, int y, boolean[][] visited, char[][] board) {
 
-        int bomb = 0;
         int row = board.length;
         int col = board[0].length;
 
-        System.out.println(x+","+y+" 들어옴");
-
         ArrayDeque<int[]> queue = new ArrayDeque<>();
-        queue.add(new int[]{x,y});
+        queue.add(new int[]{x,y,0});
+        visited[x][y] = true;
 
         while (!queue.isEmpty()) {
+            for(int[] q : queue) 
+                System.out.print(Arrays.toString(q) + " ");
+            System.out.println();
+            int[] currNode = queue.poll();
+            x = currNode[0];
+            y = currNode[1];
 
-        }
+            for (int[] rc : rcList) {
+                int currRow = x + rc[0];
+                int currCol = y + rc[1];
 
-        for (int[] rc : rcList) {
-            int currRow = x + rc[0];
-            int currCol = y + rc[1];
+                if (currRow >= 0 && currRow < row && currCol >= 0 && currCol < col && !visited[currRow][currCol]) {
 
-            if (currRow >= 0 && currRow < row && currCol >= 0 && currCol < col) {
-
-                if (board[currRow][currCol] == 'M') {
-                    //인접한 곳에 있는 폭탄 갯수 +1
-                    bomb++;
-                } else if (board[currRow][currCol] == 'X') {
-                    // 발생하지 않을 경우임
-                } else if (board[currRow][currCol] == 'B') {
-                    // 안들어가면 됨. 안쪽일 것
-                } else if (Character.isDigit(board[currRow][currCol])) {
-                    // 안들어가면 됨. 이미 계산한 것
-                } else if (board[currRow][currCol] == 'E') {
-                    // 여기서 다시 checkXY 들어가면 됨
-                    //주변을 봤을 때 M이 없으면 B를 넣으면 되네. 있으면 숫자
-                    System.out.println(currRow+","+currCol+" 진행함");
-                    // 어라 여기서 들어가버리면 DFS인데..?
-                    int cnt = checkXY(currRow, currCol, board);
-
-                    board[currRow][currCol] = cnt == 0 ? 'B' : Character.forDigit(cnt, 10);
-                } else {
-                    // 발생하지 않을 경우임
-                    return 0;
+                    if (board[currRow][currCol] == 'M') {
+                        //인접한 곳에 있는 폭탄 갯수 +1
+                        currNode[2]++;
+                    } else if (board[currRow][currCol] == 'X') {
+                        // 발생하지 않을 경우임
+                    } else if (board[currRow][currCol] == 'B') {
+                        // 안들어가면 됨. 안쪽일 것
+                    } else if (Character.isDigit(board[currRow][currCol])) {
+                        // 안들어가면 됨. 이미 계산한 것
+                    } else if (board[currRow][currCol] == 'E') {
+                        // 주변을 봤을 때 M이 없으면 B를 넣으면 되네. 있으면 숫자
+                        //int cnt = checkXY(currRow, currCol, board); -> DFS 잘못 시도한 흔적..
+                        if (!visited[currRow][currCol]) {
+                            queue.add(new int[]{currRow, currCol, 0});
+                            visited[currRow][currCol] = true;
+                        }
+                    } else {
+                        // 발생하지 않을 경우임
+                    }
                 }
+
             }
-
+            System.out.println(currNode[0]+","+currNode[1]+"좌표의 cnt"+currNode[2]);
+            if (currNode[2] == 0) {
+                board[x][y] = 'B';
+            } else {
+                board[x][y] = Character.forDigit(currNode[2],10);
+            }
         }
-
-        return bomb;
     }
 
     public static void print(char[][] board) {
         for (char[] b : board) {
             for (char c : b)
-                System.out.print(Character.valueOf(c)+' ');
+                System.out.print(Character.toString(c)+" ");
             System.out.println();
         }
+        System.out.println();
     }
 
     public static void main(String[] args) {
         char[][] result = updateBoard(new char[][]{
-                {'B','1','E','1','B'},
-                {'B','1','M','1','B'},
-                {'B','1','1','1','B'},
-                {'B','B','B','B','B'}
-        }, new int[]{1,2});
-        //print(result);
-
-        result = updateBoard(new char[][]{
                 {'E','E','E','E','E'},
                 {'E','E','M','E','E'},
                 {'E','E','E','E','E'},
                 {'E','E','E','E','E'}
-        }, new int []{3,0});
-        //print(result);
+        }, new int[]{3,0});
+        print(result);
+        /*
+        ["B","1","E","1","B"],
+        ["B","1","M","1","B"],
+        ["B","1","1","1","B"],
+        ["B","B","B","B","B"]
+        */
+
+//        result = updateBoard(new char[][]{
+//                {'B','1','E','1','B'},
+//                {'B','1','M','1','B'},
+//                {'B','1','1','1','B'},
+//                {'B','B','B','B','B'}
+//        }, new int []{1,2});
+//        print(result);
+        /*
+        ["B","1","E","1","B"],
+        ["B","1","X","1","B"],
+        ["B","1","1","1","B"],
+        ["B","B","B","B","B"]
+        */
 
     }
 }
