@@ -58,6 +58,7 @@ public class W3Minesweeper {
             x = currNode[0];
             y = currNode[1];
 
+            ArrayDeque<int[]> tmpQueue = new ArrayDeque<>();
             for (int[] rc : rcList) {
                 int currRow = x + rc[0];
                 int currCol = y + rc[1];
@@ -77,8 +78,9 @@ public class W3Minesweeper {
                         // 주변을 봤을 때 M이 없으면 B를 넣으면 되네. 있으면 숫자
                         //int cnt = checkXY(currRow, currCol, board); -> DFS 잘못 시도한 흔적..
                         if (!visited[currRow][currCol]) {
-                            queue.add(new int[]{currRow, currCol, 0});
-                            visited[currRow][currCol] = true;
+                            //queue.add(new int[]{currRow, currCol, 0});
+                            //visited[currRow][currCol] = true;
+                            tmpQueue.add(new int[]{currRow, currCol, 0});
                         }
                     } else {
                         // 발생하지 않을 경우임
@@ -86,10 +88,14 @@ public class W3Minesweeper {
                 }
 
             }
-            System.out.println(currNode[0]+","+currNode[1]+"좌표의 cnt"+currNode[2]);
             if (currNode[2] == 0) {
                 board[x][y] = 'B';
+                for (int[] t : tmpQueue) {
+                    queue.add(t);
+                    visited[t[0]][t[1]] = true;
+                }
             } else {
+                // 숫자를 넣었을 때는 그 좌표에서 더 이상 큐를 쌓지 않아도 댐!
                 board[x][y] = Character.forDigit(currNode[2],10);
             }
         }
@@ -112,26 +118,5 @@ public class W3Minesweeper {
                 {'E','E','E','E','E'}
         }, new int[]{3,0});
         print(result);
-        /*
-        ["B","1","E","1","B"],
-        ["B","1","M","1","B"],
-        ["B","1","1","1","B"],
-        ["B","B","B","B","B"]
-        */
-
-//        result = updateBoard(new char[][]{
-//                {'B','1','E','1','B'},
-//                {'B','1','M','1','B'},
-//                {'B','1','1','1','B'},
-//                {'B','B','B','B','B'}
-//        }, new int []{1,2});
-//        print(result);
-        /*
-        ["B","1","E","1","B"],
-        ["B","1","X","1","B"],
-        ["B","1","1","1","B"],
-        ["B","B","B","B","B"]
-        */
-
     }
 }
