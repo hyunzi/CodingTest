@@ -14,7 +14,6 @@ public class W1WordSearch {
         int m = board.length;
         int n = board[0].length;
 
-        char[] wordChar = word.toCharArray();
         int k = 0;
         for (int i = 0 ; i < m; i++) {
             for (int j = 0; j < n; j++) {
