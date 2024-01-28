@@ -1,6 +1,5 @@
 package com.example.codingtest;
 
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class W3MarbleEscape {
@@ -46,15 +45,11 @@ public class W3MarbleEscape {
         int[] dr = {-1, 1, 0, 0}; //상, 하, 좌, 우
         int[] dc = {0, 0, -1, 1};
         boolean[][] redVisited = new boolean[rowLength][colLength];
-        boolean[][] blueVisited = new boolean[rowLength][colLength];
         boolean redFlag = false;
         boolean blueFlag = false;
-        /*System.out.println(Arrays.toString(red));
-        System.out.println(Arrays.toString(blue));*/
 
         redVisited[red[0]][red[1]] = true;
-        blueVisited[blue[0]][blue[1]] = true;
-        while (count < 10 && !blueFlag && !redFlag ) {
+        while (count < 10 && !blueFlag && !redFlag) {
             for (int i = 0; i < dr.length; i++) {
                 int redR = red[0] + dr[i];
                 int redC = red[1] + dc[i];
@@ -69,28 +64,22 @@ public class W3MarbleEscape {
                             if (graph[redR][redC] == 'O')  break;
                         }
                         red[0] = redR-dr[i]; red[1] = redC-dc[i];
+                        if (graph[redR][redC] == 'O') {
+                            redFlag = true;
+                        }
 
                         int blueR = blue[0] + dr[i];
                         int blueC = blue[1] + dc[i];
                         if (blueR > 0 && blueR < graph.length-1 && blueC > 0 && blueC < graph[0].length) {
-                            while (graph[blueR][blueC] != '#' && !(blueR==red[0] && blueC==red[1])) {
-                                blueVisited[blueR][blueC] = true;
+                            while (graph[blueR][blueC] != '#' && !(!redFlag && blueR == red[0] && blueC == red[1])) {
                                 blueR = blueR + dr[i];
                                 blueC = blueC + dc[i];
                                 if (graph[blueR][blueC] == 'O') break;
                             }
                         }
-                         blue[0] = blueR-dr[i]; blue[1] = blueC-dc[i];
+                        blue[0] = blueR-dr[i]; blue[1] = blueC-dc[i];
 
-                        /*System.out.println("red: "+Arrays.toString(red));
-                        System.out.println("blue: "+Arrays.toString(blue));*/
-
-                        if (graph[redR][redC] == 'O') {
-                            //System.out.println("레드 도달!!");
-                            redFlag = true;
-                        }
                         if (graph[blueR][blueC] == 'O') {
-                            //System.out.println("블루 도달!!");
                             blueFlag = true;
                         }
                         count++;
@@ -102,6 +91,5 @@ public class W3MarbleEscape {
         int result = 0;
         if (!blueFlag && redFlag) result = 1;
         System.out.println(result);
-
     }
 }
