@@ -16,7 +16,7 @@ public class W3RND3 {
 
         for (int i = start; i < n; i++) {
             arr.add(i);
-            combination(i+1, n, r, arr, combList);
+            combination(i, n, r, arr, combList);
             arr.remove(Integer.valueOf(i));
         }
     }
@@ -40,7 +40,7 @@ public class W3RND3 {
             graph[idx++] = str.split(" ");
         }
 
-        int result = 999;
+        int result = Integer.MAX_VALUE;
         int[] dr = {-1, 1, 0, 0};
         int[] dc = {0, 0, -1, 1};
 
@@ -73,11 +73,8 @@ public class W3RND3 {
                 visited[curRow][curCol] = true;
                 queue.add(new int[]{curRow, curCol, 0});
             }
-            /*for (int[] q: queue){
-                System.out.print(Arrays.toString(q)+" ");
-            }System.out.print(" 조합 탐색 >>  ");*/
-            //바이러스 활성화 한 좌표에서 BFS
 
+            //바이러스 활성화 한 좌표에서 BFS
             int depth = 0;
             while (!queue.isEmpty()) {
                 int[] currNode = queue.poll();
@@ -95,9 +92,6 @@ public class W3RND3 {
                         }
                     }
                 }
-                /*for (int[] q: queue){
-                    System.out.print(Arrays.toString(q)+"   ");
-                }System.out.println();*/
             }
 
             //만약에 visited에 1,2 아닌 곳에 방문하지 못했으면? -1 아니면 마지막 depth
@@ -109,15 +103,12 @@ public class W3RND3 {
                 }
             }
 
-            //System.out.println("걸린시간: "+depth);
-            result = (depth > -1 && depth < result) ? depth : result;
-            result = result == 999 ? -1 : result;
-            /*for (boolean[] v: visited) {
-                System.out.print(Arrays.toString(v));
-                System.out.println();
-            }*/
+            if (depth != -1) {
+                result = depth < result ? depth : result;
+            }
         }
 
+        result = (result == Integer.MAX_VALUE) ? -1 : result;
         System.out.println(result);
     }
 }
