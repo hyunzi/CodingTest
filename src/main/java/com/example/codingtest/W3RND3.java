@@ -10,7 +10,6 @@ public class W3RND3 {
 
     //부분조합 만들기 - DFS
     public static void combination(int start, int n, int r, ArrayList<Integer> arr, ArrayList<List<Integer>> combList) {
-
         if (arr.size() >= r) {
             combList.add(new ArrayList<>(arr));
             return;
@@ -43,10 +42,7 @@ public class W3RND3 {
             for (int c = 0; c < mapLength; c++) {
                 graph[r][c] = st.nextToken().charAt(0);
                 //1. 바이러스의 좌표를 모두 구해야하지 않을까..
-                switch (graph[r][c]) {
-                    //case '0': target++; break;
-                    case '2': virusList.add(new int[]{r,c});
-                }
+                if (graph[r][c] == '2') virusList.add(new int[]{r,c});
             }
         }
 
@@ -54,9 +50,7 @@ public class W3RND3 {
         int[] dr = {-1, 1, 0, 0};
         int[] dc = {0, 0, -1, 1};
 
-
-        //2. 그다음 좌표의 부분조합을 구함
-        //(e.g. 5개의 노드 중 3개를 선택하는 경우의 수)
+        //2. 그다음 좌표의 부분조합을 구함 (e.g. 5개의 노드 중 3개를 선택하는 경우의 수)
         ArrayList<List<Integer>> combList = new ArrayList<>();
         ArrayList<Integer> arr = new ArrayList<>();
         combination(0, virusList.size(), virusNumber, arr, combList);
@@ -67,7 +61,7 @@ public class W3RND3 {
             boolean[][] visited = new boolean[mapLength][mapLength];
             ArrayDeque<int[]> queue = new ArrayDeque<>();
 
-            for (Integer c : comb) {
+            for (Integer c : comb) { //comb={0,1,2} 의 바이러스를 활성화시켜라
                 //활성화
                 int curRow = virusList.get(c)[0];
                 int curCol = virusList.get(c)[1];
@@ -89,7 +83,10 @@ public class W3RND3 {
                         //그 자리에서 상하좌우 보면서 visited 안했는데 0이라 바이러스 옮길 수 있으면?
                         if (graph[nextRow][nextCol] == '0' && !visited[nextRow][nextCol]) {
                             visited[nextRow][nextCol] = true;
-                            queue.add(new int[]{nextRow, nextCol, depth+1});
+                            queue.add(new int[]{nextRow, nextCol, depth + 1});
+                        } else if (graph[nextRow][nextCol] == '2' && !visited[nextRow][nextCol]) {
+                            visited[nextRow][nextCol] = true;
+                            queue.add(new int[]{nextRow, nextCol, depth});
                         }
                     }
                 }
