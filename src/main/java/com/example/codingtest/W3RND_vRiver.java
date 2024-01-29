@@ -3,10 +3,7 @@ package com.example.codingtest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class W3RND_vRiver {
 
@@ -24,15 +21,17 @@ public class W3RND_vRiver {
         }
     }
 
-    public static void bfs(char[][] board, List<Integer> comb, ArrayDeque<int[]> queue) {
+    static int result = Integer.MAX_VALUE;
+    static int target = 0;
+    public static void bfs(char[][] board, ArrayDeque<int[]> queue) {
         char[][] copied_board = new char[board.length][board[0].length];
         for (int i = 0; i < board.length; i++) {
-            System.arraycopy(copied_board[i],0,board[i],0, board[i].length);
+            System.arraycopy(board[i],0,copied_board[i],0, copied_board[i].length);
         }
 
         int count = 0;
-        int n = board.length, m = board[0].length;
-        int result = Integer.MAX_VALUE;
+        int transVirus = 0;
+        int n = board.length, m = board[0].length; // 활성화 시킬 바이러스 개수임
         int[][] rcList = {{-1,0}, {1,0}, {0,-1}, {0,1}};
 
         while(!queue.isEmpty()) {
@@ -45,16 +44,20 @@ public class W3RND_vRiver {
                 int nextCol = currCol + rc[1];
                 int nextDepth = depth + 1;
                 if (nextRow >= 0 && nextRow < n && nextCol >= 0 && nextCol < m) {
-                    if (copied_board[nextRow][nextCol] == 0) {
-                        copied_board[nextRow][nextCol] = 3;
+                    if (copied_board[nextRow][nextCol] == '0') {
+                        transVirus++;
+                        copied_board[nextRow][nextCol] = '3';
                         count = count < nextDepth ? nextDepth : count;
                         queue.add(new int[]{nextRow, nextCol, nextDepth});
-                    } else if (copied_board[nextRow][nextCol] == 2) {
-                        copied_board[nextRow][nextCol] = 3;
+                    } else if (copied_board[nextRow][nextCol] == '2') {
+                        copied_board[nextRow][nextCol] = '3';
                         queue.add(new int[]{nextRow, nextCol, nextDepth});
                     }
                 }
             }
+
+
+            if (transVirus == target) break;
         }
 
         for (char[] copied : copied_board) {
@@ -63,8 +66,7 @@ public class W3RND_vRiver {
             }
         }
 
-        result = (result == Integer.MAX_VALUE) ? -1 : result;
-        System.out.println(result);
+        result = result < count ? result : count;
     }
 
     public static void main(String[] args) throws IOException {
@@ -80,6 +82,7 @@ public class W3RND_vRiver {
             StringTokenizer st = new StringTokenizer(reader.readLine());
             for (int c = 0; c < mapLength; c++) {
                 graph[r][c] = st.nextToken().charAt(0);
+                if (graph[r][c] == '0') target++;
                 if (graph[r][c] == '2') virusList.add(new int[]{r, c});
             }
         }
@@ -88,23 +91,25 @@ public class W3RND_vRiver {
         ArrayList<Integer> arr = new ArrayList<>();
         combination(0, virusList.size(), virusNumber, arr, combList);
 
+
         for (List<Integer> comb : combList) {
             ArrayDeque<int[]> queue = new ArrayDeque<>();
 
             for (Integer k : comb) {
                 int r = virusList.get(k)[0];
                 int c = virusList.get(k)[1];
-                graph[r][c] = 3;
+                graph[r][c] = '3';
                 queue.add(new int[]{r, c, 0});
             }
-            bfs(graph, comb, queue);
+            bfs(graph, queue);
             for (Integer k : comb) {
                 int r = virusList.get(k)[0];
                 int c = virusList.get(k)[1];
-                graph[r][c] = 2;
+                graph[r][c] = '2';
             }
         }
 
-
+        result = (result == Integer.MAX_VALUE) ? -1 : result;
+        System.out.println(result);
     }
 }
