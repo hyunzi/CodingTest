@@ -17,10 +17,15 @@ public class W3RND3 {
 
         for (int i = start; i < n; i++) {
             arr.add(i);
-            combination(i, n, r, arr, combList);
+            combination(i+1, n, r, arr, combList);
             arr.remove(Integer.valueOf(i));
         }
     }
+
+    static char[][] graph = null;
+    static int result = Integer.MAX_VALUE;
+    static int[] dr = {-1, 1, 0, 0};
+    static int[] dc = {0, 0, -1, 1};
 
     public static void main(String[] args) throws IOException {
 
@@ -35,7 +40,7 @@ public class W3RND3 {
         int mapLength = Integer.parseInt(line[0]);
         int virusNumber = Integer.parseInt(line[1]);
 
-        char[][] graph = new char[mapLength][mapLength];
+        graph = new char[mapLength][mapLength];
         ArrayList<int[]> virusList = new ArrayList<>();
         for (int r = 0; r < mapLength; r++) {
             StringTokenizer st = new StringTokenizer(reader.readLine());
@@ -45,10 +50,6 @@ public class W3RND3 {
                 if (graph[r][c] == '2') virusList.add(new int[]{r,c});
             }
         }
-
-        int result = Integer.MAX_VALUE;
-        int[] dr = {-1, 1, 0, 0};
-        int[] dc = {0, 0, -1, 1};
 
         //2. 그다음 좌표의 부분조합을 구함 (e.g. 5개의 노드 중 3개를 선택하는 경우의 수)
         ArrayList<List<Integer>> combList = new ArrayList<>();
@@ -62,53 +63,53 @@ public class W3RND3 {
             ArrayDeque<int[]> queue = new ArrayDeque<>();
 
             for (Integer c : comb) { //comb={0,1,2} 의 바이러스를 활성화시켜라
-                //활성화
-                int curRow = virusList.get(c)[0];
-                int curCol = virusList.get(c)[1];
-                visited[curRow][curCol] = true;
-                queue.add(new int[]{curRow, curCol, 0});
+                visited[virusList.get(c)[0]][virusList.get(c)[1]] = true;
+                queue.add(new int[]{virusList.get(c)[0], virusList.get(c)[1], 0});
             }
+            bfs(comb, visited, queue);
+        }
 
-            //4. 바이러스 활성화 한 좌표에서 BFS
-            int depth = 0;
-            while (!queue.isEmpty()) {
-                int[] currNode = queue.poll();
-                int currRow = currNode[0];
-                int currCol = currNode[1];
-                depth = currNode[2];
-                for (int i = 0; i < dr.length; i++) {
-                    int nextRow = currRow + dr[i];
-                    int nextCol = currCol + dc[i];
-                    if (nextRow >= 0 && nextRow < mapLength && nextCol >= 0 && nextCol < mapLength) {
-                        //그 자리에서 상하좌우 보면서 visited 안했는데 0이라 바이러스 옮길 수 있으면?
-                        if (graph[nextRow][nextCol] == '0' && !visited[nextRow][nextCol]) {
-                            visited[nextRow][nextCol] = true;
-                            queue.add(new int[]{nextRow, nextCol, depth + 1});
-                        } else if (graph[nextRow][nextCol] == '2' && !visited[nextRow][nextCol]) {
-                            visited[nextRow][nextCol] = true;
-                            queue.add(new int[]{nextRow, nextCol, depth});
-                        }
+        System.out.println((result == Integer.MAX_VALUE) ? -1 : result);
+
+    }
+
+    private static void bfs(List<Integer> comb, boolean[][] visited, ArrayDeque<int[]> queue) {
+
+        int count = 0;
+        int mapLength = graph.length;
+        //4. 바이러스 활성화 한 좌표에서 BFS
+        while (!queue.isEmpty()) {
+            int[] currNode = queue.poll();
+            int currRow = currNode[0];
+            int currCol = currNode[1];
+            int currDepth = currNode[2];
+            for (int i = 0; i < dr.length; i++) {
+                int nextRow = currRow + dr[i];
+                int nextCol = currCol + dc[i];
+                int nextDepth = currDepth + 1;
+                if (nextRow >= 0 && nextRow < mapLength && nextCol >= 0 && nextCol < mapLength && !visited[nextRow][nextCol]) {
+                    //그 자리에서 상하좌우 보면서 visited 안했는데 0이라 바이러스 옮길 수 있으면?
+                    if (graph[nextRow][nextCol] == '0') {
+                        visited[nextRow][nextCol] = true;
+                        queue.add(new int[]{nextRow, nextCol, nextDepth});
+                        count = Math.max(count, nextDepth);
+                    } else if (graph[nextRow][nextCol] == '2') {
+                        visited[nextRow][nextCol] = true;
+                        queue.add(new int[]{nextRow, nextCol, nextDepth});
                     }
                 }
-            }
-
-            //만약에 visited에 1,2 아닌 곳에 방문하지 못했으면? -1 아니면 마지막 depth
-            for (int i = 0; i < mapLength; i++) {
-                for (int j = 0; j < mapLength; j++) {
-                    if (graph[i][j] == '0' && !visited[i][j]) {
-                        depth = -1;
-                        break;
-                    }
-                }
-                if (depth == -1) break;
-            }
-
-            if (depth != -1) {
-                result = depth < result ? depth : result;
             }
         }
 
-        result = (result == Integer.MAX_VALUE) ? -1 : result;
-        System.out.println(result);
+        //만약에 visited에 1,2 아닌 곳에 방문하지 못했으면? -1 아니면 마지막 depth
+        for (int i = 0; i < mapLength; i++) {
+            for (int j = 0; j < mapLength; j++) {
+                if (graph[i][j] == '0' && !visited[i][j]) {
+                    return;
+                }
+            }
+        }
+
+        result = Math.min(result, count);
     }
 }
