@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-public class W3RND_vRiver {
+public class W3RND3_v2 {
 
     public static void combination(int start, int n, int r, ArrayList<Integer> arr, ArrayList<List<Integer>> combList) {
 
@@ -19,21 +19,27 @@ public class W3RND_vRiver {
 
         for (int i = start; i < n; i++) {
             arr.add(i);
-            combination(i, n, r, arr, combList);
+            combination(i+1, n, r, arr, combList);
             arr.remove(Integer.valueOf(i));
         }
     }
 
-    public static void bfs(char[][] board, List<Integer> comb, ArrayDeque<int[]> queue) {
-        char[][] copied_board = new char[board.length][board[0].length];
+    static char[][] board = null;
+    static int result = Integer.MAX_VALUE;
+    static int[][] rcList = {{-1,0}, {1,0}, {0,-1}, {0,1}};
+    static ArrayList<int[]> virusList = null;
+    public static void bfs(List<Integer> comb) {
+        int n = board.length;
+        char[][] copied_board = new char[board.length][board.length];
         for (int i = 0; i < board.length; i++) {
-            System.arraycopy(copied_board[i],0,board[i],0, board[i].length);
+            System.arraycopy(board[i],0,copied_board[i],0, n);
         }
 
         int count = 0;
-        int n = board.length, m = board[0].length;
-        int result = Integer.MAX_VALUE;
-        int[][] rcList = {{-1,0}, {1,0}, {0,-1}, {0,1}};
+        ArrayDeque<int[]> queue = new ArrayDeque<>();
+        for (int c : comb) {
+            queue.add(new int[]{virusList.get(c)[0],virusList.get(c)[1], 0});
+        }
 
         while(!queue.isEmpty()) {
             int[] currNode = queue.poll();
@@ -44,13 +50,13 @@ public class W3RND_vRiver {
                 int nextRow = currRow + rc[0];
                 int nextCol = currCol + rc[1];
                 int nextDepth = depth + 1;
-                if (nextRow >= 0 && nextRow < n && nextCol >= 0 && nextCol < m) {
-                    if (copied_board[nextRow][nextCol] == 0) {
-                        copied_board[nextRow][nextCol] = 3;
-                        count = count < nextDepth ? nextDepth : count;
+                if (nextRow >= 0 && nextRow < n && nextCol >= 0 && nextCol < n) {
+                    if (copied_board[nextRow][nextCol] == '0') {
+                        copied_board[nextRow][nextCol] = '3';
+                        count = Math.max(count, nextDepth);
                         queue.add(new int[]{nextRow, nextCol, nextDepth});
-                    } else if (copied_board[nextRow][nextCol] == 2) {
-                        copied_board[nextRow][nextCol] = 3;
+                    } else if (copied_board[nextRow][nextCol] == '2') {
+                        copied_board[nextRow][nextCol] = '3';
                         queue.add(new int[]{nextRow, nextCol, nextDepth});
                     }
                 }
@@ -63,24 +69,22 @@ public class W3RND_vRiver {
             }
         }
 
-        result = (result == Integer.MAX_VALUE) ? -1 : result;
-        System.out.println(result);
+        result = Math.min(result, count);
     }
 
     public static void main(String[] args) throws IOException {
-
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String[] line = reader.readLine().split(" ");
         int mapLength = Integer.parseInt(line[0]);
         int virusNumber = Integer.parseInt(line[1]);
 
-        char[][] graph = new char[mapLength][mapLength];
-        ArrayList<int[]> virusList = new ArrayList<>();
+        board = new char[mapLength][mapLength];
+        virusList = new ArrayList<>();
         for (int r = 0; r < mapLength; r++) {
             StringTokenizer st = new StringTokenizer(reader.readLine());
             for (int c = 0; c < mapLength; c++) {
-                graph[r][c] = st.nextToken().charAt(0);
-                if (graph[r][c] == '2') virusList.add(new int[]{r, c});
+                board[r][c] = st.nextToken().charAt(0);
+                if (board[r][c] == '2') virusList.add(new int[]{r, c});
             }
         }
 
@@ -89,22 +93,19 @@ public class W3RND_vRiver {
         combination(0, virusList.size(), virusNumber, arr, combList);
 
         for (List<Integer> comb : combList) {
-            ArrayDeque<int[]> queue = new ArrayDeque<>();
-
             for (Integer k : comb) {
                 int r = virusList.get(k)[0];
                 int c = virusList.get(k)[1];
-                graph[r][c] = 3;
-                queue.add(new int[]{r, c, 0});
+                board[r][c] = '3';
             }
-            bfs(graph, comb, queue);
+            bfs(comb);
             for (Integer k : comb) {
                 int r = virusList.get(k)[0];
                 int c = virusList.get(k)[1];
-                graph[r][c] = 2;
+                board[r][c] = '2';
             }
         }
 
-
+        System.out.println((result == Integer.MAX_VALUE) ? -1 : result);
     }
 }
