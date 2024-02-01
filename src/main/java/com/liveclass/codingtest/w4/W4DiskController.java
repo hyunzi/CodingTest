@@ -4,18 +4,9 @@ import java.util.*;
 
 public class W4DiskController {
 
-    public static void main(String[] args) {
-        int result = 0;
-//        result = solution(new int[][]{{0,3}, {2,4}, {1,40}, {6,5}, {1,9}, {2,6}});
-//        System.out.println(result);
-//        result = solution(new int[][]{{0, 3}, {2, 5}, {4, 2}});
-//        System.out.println(result);
-        result = solution(new int[][]{{1,4},{7,9},{1000,3}});
-        System.out.println(result);
-    }
-
     public static int solution(int[][] jobs) {
         int answer = 0;
+        //먼저 정렬하고 진행하는 이유?
         Arrays.sort(jobs, (j1, j2) -> j1[0] - j2[0]);
         Queue<int[]> pq = new PriorityQueue<>((o1, o2) -> Integer.compare(o1[1], o2[1]));
 
@@ -30,10 +21,6 @@ public class W4DiskController {
                 pq.add(jobs[jobIndex]);
                 jobIndex++;
             }
-/*
-            for (int[] q : pq)
-                System.out.println(Arrays.toString(q));
-*/
 
             if (!pq.isEmpty()) {
                 int[] q = pq.poll();
@@ -47,4 +34,15 @@ public class W4DiskController {
         answer = (int) Math.floor(Arrays.stream(avgDuration).sum() / n);
         return answer;
     }
+
+    public static void main(String[] args) {
+        int result = 0;
+//        result = solution(new int[][]{{0,3}, {2,4}, {1,40}, {6,5}, {1,9}, {2,6}});
+//        System.out.println(result);
+//        result = solution(new int[][]{{0, 3}, {2, 5}, {4, 2}});
+//        System.out.println(result);
+        result = solution(new int[][]{{1,4},{7,9},{1000,3}});
+        System.out.println(result);
+    }
+
 }
