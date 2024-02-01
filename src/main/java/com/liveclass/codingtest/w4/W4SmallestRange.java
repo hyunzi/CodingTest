@@ -4,7 +4,7 @@ import java.util.*;
 
 public class W4SmallestRange {
 
-    /* SmallestRangeCoveringElementsFromKLists */
+    /* Smallest Range Covering Elements From K Lists*/
 
     public static int[] smallestRange(List<List<Integer>> nums) {
 
@@ -30,28 +30,19 @@ public class W4SmallestRange {
             int currList = currMin[1];
             //이렇게 가져오면 같은 값이 두 개 있을 때 문제가 생기니 그냥 인덱스 저장하자!
             //int currValIndex = nums.get(currList).indexOf(Integer.valueOf(currMin[0]));
-            int currValIndex = currMin[2];
-            int nextValIndex = currValIndex+1;
+            int nextValIndex = currMin[2]+1;
 
             //현재 min 이었던 리스트의 다음 값을 큐에 넣음
             if (nextValIndex < nums.get(currMin[1]).size()) {
                 int newValue = nums.get(currList).get(nextValIndex);
                 pQueue.add(new int[]{nums.get(currList).get(nextValIndex), currMin[1], nextValIndex});
-
                 range[0] = pQueue.peek()[0];
                 range[1] = Math.max(range[1], newValue);
-                /*if (range[0] == result[0] && range[1] == result[1]) {
-                    break;
-                } else */
                 if ((range[1] - range[0]) < (result[1] - result[0])) {
                     result[0] = range[0];
                     result[1] = range[1];
                 }
             } else {
-                if (nextValIndex == 1) {
-                    result[0] = range[0];
-                    result[1] = range[1];
-                }
                 break;
             }
         }
@@ -67,12 +58,11 @@ public class W4SmallestRange {
             Arrays.asList(5,18,22,30));
 
         */
-        /*
         List<List<Integer>> nums = Arrays.asList(
                 Arrays.asList(1,2,3),
                 Arrays.asList(1,2,3),
                 Arrays.asList(1,2,3));
-        */
+
         /*
         List<List<Integer>> nums = Arrays.asList(
                 Arrays.asList(10,10),
@@ -114,7 +104,7 @@ public class W4SmallestRange {
             Arrays.asList(78,80,89,89,90),
             Arrays.asList(35,47,63,69,77,92,94));
         */
-        // 88/90 passed
+        /*
         List<List<Integer>> nums = Arrays.asList(
                 Arrays.asList(-1,1),
                 Arrays.asList(-2,2),
@@ -171,6 +161,7 @@ public class W4SmallestRange {
                 Arrays.asList(-53,53),
                 Arrays.asList(-54,54),
                 Arrays.asList(-55,55)); // -55,-1 이 나와야 함...
+         */
         int[] result = smallestRange(nums);
         System.out.println(Arrays.toString(result));
     }
