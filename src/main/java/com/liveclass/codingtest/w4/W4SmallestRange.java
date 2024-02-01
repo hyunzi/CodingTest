@@ -4,7 +4,7 @@ import java.util.*;
 
 public class W4SmallestRange {
 
-    /* Smallest Range Covering Elements From K Lists*/
+    /* Smallest Range Covering Elements From K Lists */
 
     public static int[] smallestRange(List<List<Integer>> nums) {
 
