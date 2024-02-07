@@ -1,5 +1,7 @@
 package com.liveclass.codingtest.w4;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 public class W4DiskController {
@@ -31,7 +33,9 @@ public class W4DiskController {
             }
         }
 
-        answer = (int) Math.floor(Arrays.stream(avgDuration).sum() / n);
+        BigDecimal bigDecimal = new BigDecimal(Arrays.stream(avgDuration).sum() / n);
+        answer = bigDecimal.setScale(0, RoundingMode.DOWN).intValue();
+
         return answer;
     }
 
