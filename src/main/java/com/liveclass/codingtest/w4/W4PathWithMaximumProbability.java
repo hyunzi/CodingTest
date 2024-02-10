@@ -22,49 +22,46 @@ public class W4PathWithMaximumProbability {
 
     public static double maxProbability(int n, int[][] edges, double[] succProb, int start_node, int end_node) {
 
-        double[][] graph = new double[n][n];
+        Map<Integer, List<Edge>> graph = new HashMap<>();
         for (int i = 0; i < edges.length; i++) {
-            int[]edge = edges[i];
-            graph[edge[0]][edge[1]] = succProb[i];
-            graph[edge[1]][edge[0]] = succProb[i];
-        }
-        for (double[] gra : graph) {
-            for(double g : gra) {
-                System.out.print(g+" ");
-            }
-            System.out.println();
+            int[] edge = edges[i];
+            graph.putIfAbsent(edge[0], new ArrayList<>());
+            graph.putIfAbsent(edge[1], new ArrayList<>());
+            graph.get(edge[0]).add(new Edge(edge[1], succProb[i]));
+            graph.get(edge[1]).add(new Edge(edge[0], succProb[i]));
         }
 
         double[] probabilities = new double[n];
-
         Queue<Entry> pq = new PriorityQueue<>();
         pq.add(new Entry(start_node, 1.0)); //시작 좌표를 넣고, 여기로 부터 인접한 노드들 중 가장 우선순위가 높은 곳!
+        probabilities[start_node] = 1.0;
 
         while(!pq.isEmpty()) {
-            Entry curr = pq.poll();
-            System.out.println("curr = " + curr);
+            Entry curr = pq.remove();
 
             if (probabilities[curr.node] > curr.prob) continue;
-            if (Arrays.stream(graph[curr.node]).allMatch(i->i==0.0)) {
-                continue;
-            }
+            if (!graph.containsKey(curr.node)) continue;
 
-
-            for(int i = 0; i < n; i++) {
-                if (graph[curr.node][i] == 0) continue;
-                double nextProb = curr.prob * graph[curr.node][i];
-                System.out.println("nextProb = " + nextProb);
-                if (probabilities[i] < nextProb) {
-                    probabilities[i] = nextProb;
-                    pq.add(new Entry(i, nextProb));
+            for (Edge edge : graph.get(curr.node)) {
+                double nextProb = curr.prob * edge.weight;
+                if (probabilities[edge.node] < nextProb) {
+                    probabilities[edge.node] = nextProb;
+                    pq.add(new Entry(edge.node, nextProb));
                 }
             }
 
         }
-        System.out.println("Arrays.toString(probabilities) = " + Arrays.toString(probabilities));
         return probabilities[end_node];
     }
 
+    private static class Edge {
+        int node;
+        double weight;
+        public Edge(int node, double weight) {
+            this.node = node;
+            this.weight = weight;
+        }
+    }
     private static class Entry implements Comparable<Entry> {
         int node;
         double prob;
@@ -76,12 +73,8 @@ public class W4PathWithMaximumProbability {
 
         @Override
         public int compareTo(Entry o) { //현재 객체 < 파라미터로 넘어온 객체 → 음수 리턴 (오름차순)
-            return (this.prob == o.prob) ? 0 : (this.prob < o.prob) ? -1 : 1;
-        }
-
-        @Override
-        public String toString() {
-            return node+","+prob;
+                                        //                              → 양수 리턴 (내림차순)
+            return (this.prob == o.prob) ? 0 : (o.prob < this.prob) ? -1 : 1;
         }
     }
 
