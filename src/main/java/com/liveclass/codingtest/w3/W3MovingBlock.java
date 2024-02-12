@@ -9,11 +9,11 @@ public class W3MovingBlock {
 
         //로봇이 이동할 수 있는 경우의 수
         //가로로 놓인 경우 좌우, 세로로 놓인 경우 상하 --> 각 2가지
-        //축1을 기준으로 2번, 축2를 기준으로 2번 --> 총 4가지
+        //회전은 축1을 기준으로 2번, 축2를 기준으로 2번 --> 총 4가지
 
         //[0,0] [0,1]에서 출발하여 각 좌표당 6가지 경우의 수를 탐색
         //BFS 탐색. 가로인지 세로인지 판단 후 진행
-        //Depth 도 같이 저장. N,N에 도달했을 때 Depth가 가장 작은 수를 출력
+        //Depth 도 같이 저장. N,N에 도달했을 때 Depth 가장 작은 수를 출력
 
 
         int[][] bot = new int[][]{{0,0},{0,1},{0}};
@@ -43,6 +43,7 @@ public class W3MovingBlock {
                 break;
             }
 
+            //항상 bot[0] 이 왼쪽이나 위쪽에 있도록 하고 싶었는데.. 이게 문제인가
             if (currBot[1][1] < currBot[0][1] || currBot[1][0] < currBot[0][0]) {
                 int[][] tmpBot = new int[][]{{currBot[1][0], currBot[1][1]},{currBot[0][0],currBot[0][1]},{currBot[2][0]}};
                 currBot = new int[][]{{tmpBot[0][0], tmpBot[0][1]},{tmpBot[1][0],tmpBot[1][1]},{tmpBot[2][0]}};
@@ -121,12 +122,21 @@ public class W3MovingBlock {
 
     public static void main(String args[]) {
 
-        int result = solution(new int[][]{
+        /*int result = solution(new int[][]{
             {0, 0, 0, 1, 1},
             {0, 0, 0, 1, 0},
             {0, 1, 0, 1, 1},
             {1, 1, 0, 0, 1},
             {0, 0, 0, 0, 0}
+        });*/
+        int result = solution(new int[][]{
+                {0, 0, 0, 0, 0, 0, 1},
+                {1, 1, 1, 1, 0, 0, 1},
+                {0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 1, 1, 1, 1, 0},
+                {0, 1, 1, 1, 1, 1, 0},
+                {0, 0, 0, 0, 0, 1, 1},
+                {0, 0, 1, 0, 0, 0, 0}
         });
         System.out.println(result);
     }
