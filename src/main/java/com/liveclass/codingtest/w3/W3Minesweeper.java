@@ -40,18 +40,19 @@ public class W3Minesweeper {
     }
 
     //상,하,좌,우,좌상,좌하,우하,우상
-    static int[][] rcList = new int[][]{{-1,0},{1,0},{0,-1},{0,1},{-1,-1},{-1,1},{1,1},{1,-1}};
+    static int[][] rcList = new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {-1, 1}, {1, 1}, {1, -1}};
+
     public static void checkXY(int x, int y, boolean[][] visited, char[][] board) {
 
         int row = board.length;
         int col = board[0].length;
 
         ArrayDeque<int[]> queue = new ArrayDeque<>();
-        queue.add(new int[]{x,y,0});
+        queue.add(new int[]{x, y, 0});
         visited[x][y] = true;
 
         while (!queue.isEmpty()) {
-            for(int[] q : queue) 
+            for (int[] q : queue)
                 System.out.print(Arrays.toString(q) + " ");
             System.out.println();
             int[] currNode = queue.poll();
@@ -96,7 +97,7 @@ public class W3Minesweeper {
                 }
             } else {
                 // 숫자를 넣었을 때는 그 좌표에서 더 이상 큐를 쌓지 않아도 댐!
-                board[x][y] = Character.forDigit(currNode[2],10);
+                board[x][y] = Character.forDigit(currNode[2], 10);
             }
         }
     }
@@ -104,7 +105,7 @@ public class W3Minesweeper {
     public static void print(char[][] board) {
         for (char[] b : board) {
             for (char c : b)
-                System.out.print(Character.toString(c)+" ");
+                System.out.print(Character.toString(c) + " ");
             System.out.println();
         }
         System.out.println();
@@ -112,11 +113,11 @@ public class W3Minesweeper {
 
     public static void main(String[] args) {
         char[][] result = updateBoard(new char[][]{
-                {'E','E','E','E','E'},
-                {'E','E','M','E','E'},
-                {'E','E','E','E','E'},
-                {'E','E','E','E','E'}
-        }, new int[]{3,0});
+                {'E', 'E', 'E', 'E', 'E'},
+                {'E', 'E', 'M', 'E', 'E'},
+                {'E', 'E', 'E', 'E', 'E'},
+                {'E', 'E', 'E', 'E', 'E'}
+        }, new int[]{3, 0});
         print(result);
     }
 }

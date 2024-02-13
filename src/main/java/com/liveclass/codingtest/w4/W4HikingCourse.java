@@ -54,8 +54,12 @@ public class W4HikingCourse {
      */
     private static int[] dijkstra(int n, int start, int[] gates, int[] summits) {
         int[] costs = new int[n+1];
+        int[] maxCosts = new int[n+1];
         Arrays.fill(costs, Integer.MAX_VALUE);
+        Arrays.fill(maxCosts, Integer.MAX_VALUE);
         costs[start] = 0;
+        maxCosts[start] = 0;
+
 
         Queue<Entry> pq = new PriorityQueue<>(); //Min heap
         pq.add(new Entry(start, 0));
@@ -63,20 +67,21 @@ public class W4HikingCourse {
 
         while (!pq.isEmpty()) {
             Entry curr = pq.remove();
-            //paths 잘 구해진당! 다만 돌아와서 다시 구하는 경우를 잘 봐야함~
 
             if (map.containsKey(curr.node)) {
                 for (Edge edge : map.get(curr.node)) {
                     int newCost = curr.cost + edge.cost;
-                    if (newCost < costs[edge.node]) { //여기서 코스트의 합이 아니라.. 지금까지 온 길의 maxCost가 더 작은걸 봐야할듯..?
-                        costs[edge.node]= curr.cost + edge.cost;
+                    //if (edge.cost < maxCosts[edge.node]) {
+                    if (newCost < costs[edge.node]) { //여기서 코스트의 합이 아니라.. 지금까지 온 길의 maxCost 가 더 작은걸 봐야할듯..?
+                        costs[edge.node] = curr.cost + edge.cost;
+                        maxCosts[edge.node] = Math.min(maxCosts[edge.node], edge.cost);
                         pq.add(new Entry(edge.node, newCost));
 
                         paths.putIfAbsent(edge.node, new ArrayList<>());
                         if (paths.containsKey(curr.node)) {
                             for (int prevNode : paths.get(curr.node)) {
                                 if (prevNode == start) {
-                                    paths.remove(edge.node);
+                                    paths.remove(edge.node); // 출입구에서 다시 구하는 경우를 봐야함
                                     paths.putIfAbsent(edge.node, new ArrayList<>());
                                 }
                                 paths.get(edge.node).add(prevNode);
@@ -88,7 +93,8 @@ public class W4HikingCourse {
             }
         }
 
-        /* 도착 노드가 산봉우리이고 중간에 다른 출입구나 산봉우리가 없는 경로 중에 최소 intensity 를 가지는 것을 구하면?!*/
+        System.out.println("Arrays.toString(maxCosts) = " + Arrays.toString(maxCosts));
+        /* 도착 노드가 산봉우리이고 중간에 다른 출입구나 산봉우리가 없는 경로 중에 최소 intensity 를 가지는 것을 구하면?! */
         for (int summit : summits) {
             //다른출입구나 산봉우리 있는지 검사
             int maxCost = 0;
