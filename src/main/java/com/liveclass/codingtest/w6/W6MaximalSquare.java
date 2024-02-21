@@ -9,41 +9,43 @@ public class W6MaximalSquare {
         int result = 0;
         int row = matrix.length;
         int col = matrix[0].length;
-        int[][] dp = new int[row][col];
 
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < col; j++) {
                 if (matrix[i][j] == '1') { // 현재 좌표가 1인지 확인
                     int k = 1;
                     int cnt = 0;
+
                     while (i + k <= row && j + k <= col) {
                         boolean flag = true;
                         cnt = 0;
                         for (int x = i; x < i + k; x++) {
-                            for (int y = j; y < j + k; y++) {
-                                if (matrix[x][y] != '1') {
-                                    flag = false;
-                                    break;
-                                }
-                                cnt++;
+                            if (matrix[x][j + k - 1] != '1') {
+                                flag = false;
+                                break;
                             }
-                            if (!flag) break;
+                            cnt++;
+                        }
+                        for (int y = j; y < j + k; y++) {
+                            if (matrix[i + k - 1][y] != '1') {
+                                flag = false;
+                                break;
+                            }
+                            cnt++;
                         }
                         if (!flag) break;
                         k += 1;
+
                     }
 
-                    if (cnt == k*k) {
-                        result = Math.max(result,cnt);
+                    if (cnt == k * k) {
+                        result = Math.max(result, cnt);
                     } else {
-                        result = Math.max(result,(k-1)*(k-1));
+                        result = Math.max(result, (k - 1) * (k - 1));
                     }
-                    System.out.println(k-1+"/"+i + "," + j + "=" + cnt);
-
                 }
             }
         }
-
 
         return result;
     }
