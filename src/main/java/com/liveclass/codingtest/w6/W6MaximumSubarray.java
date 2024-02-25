@@ -1,8 +1,6 @@
 package com.liveclass.codingtest.w6;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class W6MaximumSubarray {
 
@@ -23,6 +21,21 @@ public class W6MaximumSubarray {
 */
 
     public static int maxSubArray(int[] nums) {
+        int[] dp = new int[nums.length];
+        dp[0] = nums[0];
+
+        for (int i = 1; i < nums.length; i++) {
+            dp[i] = Math.max(nums[i], dp[i - 1] + nums[i]);
+        }
+
+        int max = dp[0];
+        for (int num : dp) {
+            max = Math.max(max, num);
+        }
+        return max;
+    }
+
+    public static int maxSubArray_fail(int[] nums) {
 
         int[] dpMax = new int[nums.length];
         Arrays.fill(dpMax, Integer.MIN_VALUE);
@@ -60,6 +73,7 @@ public class W6MaximumSubarray {
 
         return result;
     }
+
     public static void main(String[] args) {
 
         int result1 = maxSubArray(new int[]{-2,1,-3,4,-1,2,1,-5,4});
