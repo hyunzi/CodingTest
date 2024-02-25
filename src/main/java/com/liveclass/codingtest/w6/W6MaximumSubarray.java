@@ -1,6 +1,7 @@
 package com.liveclass.codingtest.w6;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class W6MaximumSubarray {
@@ -23,25 +24,8 @@ public class W6MaximumSubarray {
 
     public static int maxSubArray(int[] nums) {
 
-        List<int[]> dp = new ArrayList<>();
-        /*
-        int left = 0;
-        int right = nums.length-1;
-
-        while (left < (nums.length / 2)) {
-            if (nums[left] >= 0 && nums[right] >= 0 && right >= left) {
-                dp.add(new int[]{left, right});
-                left++;
-                right--;
-            } else if (nums[left] > 0) {
-                right--;
-            } else if (nums[right] > 0) {
-                left++;
-            } else {
-                left++;
-                right--;
-            }
-        }*/
+        int[] dpMax = new int[nums.length];
+        Arrays.fill(dpMax, Integer.MIN_VALUE);
 
         for (int left = 0; left < nums.length; left++) {
             int right = nums.length;
@@ -53,32 +37,29 @@ public class W6MaximumSubarray {
                     if (nums[right] < 1) {
                         continue;
                     } else {
-                        dp.add(new int[]{left, right});
-                        //System.out.print("left = " + left);
-                        //System.out.println(" / right = " + right);
+                        int sum = 0;
+                        for (int i = left; i <= right ; i++) {
+                            sum += nums[i];
+                        }
+                        dpMax[left] = Math.max(dpMax[left], sum);
                     }
                 }
             }
         }
 
+        Arrays.sort(dpMax);
+        //System.out.println("dpMax = " + Arrays.toString(dpMax));
         int result = Integer.MIN_VALUE;
-        if (dp.isEmpty()) {
+        if (dpMax[dpMax.length-1] == Integer.MIN_VALUE) {
             for (int i = 0; i < nums.length; i++) {
                 result = Math.max(result, nums[i]);
             }
-        }
-        for (int[] d : dp) {
-            int sum = 0;
-            for (int i = d[0]; i <= d[1]; i++) {
-                sum += nums[i];
-            }
-            //System.out.println("sum = " + sum);
-            result = Math.max(result, sum);
+        } else {
+            result = dpMax[dpMax.length-1];
         }
 
         return result;
     }
-
     public static void main(String[] args) {
 
         int result1 = maxSubArray(new int[]{-2,1,-3,4,-1,2,1,-5,4});
