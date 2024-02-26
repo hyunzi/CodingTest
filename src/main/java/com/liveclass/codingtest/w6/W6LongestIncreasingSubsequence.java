@@ -25,25 +25,19 @@ public class W6LongestIncreasingSubsequence {
     public static int lengthOfLIS(int[] nums) {
         int[] dp = new int[nums.length];
 
+        dp[0] = 1;
+        int result = 1;
+
         for (int i = 0; i < nums.length; i++) {
-            if (i == 0) {
-                dp[i] = 1;
-            } else if (i == 1) {
-                dp[i] = nums[0] < nums[1] ? 2 : 1;
-            } else {
-                if (nums[i] > nums[i-1]) {
-                    dp[i] = dp[i-1] + 1;
-                }
-                if (nums[i] > nums[i-2]) {
-                    dp[i] = Math.max(dp[i-2]+1, dp[i]);
-                }
-                if (dp[i] == 0) {
-                    dp[i] = dp[i-1];
+            dp[i] = 1;
+            for (int j = 0; j < i; j++) {
+                if (nums[j] < nums[i]) {
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
                 }
             }
+            result = Math.max(dp[i], result);
         }
-        System.out.println("dp = " + Arrays.toString(dp));
-        return dp[nums.length-1];
+        return result;
     }
 
     public static void main(String[] args) {
