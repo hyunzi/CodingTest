@@ -4,16 +4,17 @@ public class W7DecryptMessage {
 
     public static String solution(String m, String k) {
 
-        String result = "";
+        //String result = "";
+        StringBuilder result = new StringBuilder();
         for (int i = 0, j = 0; i < m.length(); i++) {
             if (j < k.length() && m.charAt(i) == k.charAt(j)) {
                 j++;
             } else {
-                result += m.charAt(i);
+                result.append(m.charAt(i));
             }
         }
 
-        return result;
+        return result.toString();
     }
 
     public static void main(String[] args) {
