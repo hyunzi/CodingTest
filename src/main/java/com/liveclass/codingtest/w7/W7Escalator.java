@@ -4,8 +4,12 @@ import java.util.Arrays;
 
 public class W7Escalator {
 
+    //DP문제
     public static int solution(int[][] escalator) {
         int LIMIT = 10000000;
+        //MAX_VALUE로 쓰면 overflow 난다 -> 서우님 꿀팁1
+        //memo[][] 라고 따로 선언해서 대입하는 것이 좋다 -> 서우님 꿀팁2
+        //DP 는 하나씩 다 봐야하는 것이다. -> 서우님 꿀팁3
 
         escalator[0][0] = escalator[0][0] == 1 ? LIMIT : 1;
         escalator[0][1] = escalator[0][1] == 1 ? LIMIT : 0;
