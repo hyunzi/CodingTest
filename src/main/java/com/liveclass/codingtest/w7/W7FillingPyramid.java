@@ -1,6 +1,7 @@
 package com.liveclass.codingtest.w7;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class W7FillingPyramid {
 
@@ -18,73 +19,31 @@ public class W7FillingPyramid {
     //blocks 길이가 6이라면? 6+5+4+3+2+1 = 
     public static int[] solve(int[][] blocks) {
 
-        //result 길이
-        int length = pyramidLength(blocks.length);
-        int[] result = new int[length];
-        Arrays.fill(result, Integer.MIN_VALUE);
+        int[][] result = new int[blocks.length][blocks.length];
 
-        //첫 번째 원소는 무조건 꼭대기층
-        //나머지 원소도 result에 넣어두고 돌릴까?!
-        Queue<int[]> queue = new ArrayDeque<>();
-        for (int row = 0; row < blocks.length; row++) {
-            int currIdx = pyramidLength(row) + blocks[row][0];
-            result[currIdx] = blocks[row][1];
+        for (int i = 0; i < blocks.length; i++) {
+
+            final int length = i+1;
+            final int startIndex = blocks[i][0];
+            final int startValue = blocks[i][1];
+            result[i][startIndex] = startValue;
+
+            for (int j = startIndex - 1; j >= 0; j--) {
+                result[i][j] = result[i-1][j] - result[i][j+1];
+            }
+            for (int j = startIndex + 1; j < length; j++) {
+                result[i][j] = result[i-1][j-1] - result[i][j-1];
+            }
         }
 
-        int blockIdx = 1;
-        queue.add(new int[]{blockIdx,blocks[blockIdx][0], blocks[blockIdx][1]});
-
-        while (!queue.isEmpty() && blockIdx < blocks.length-1) {
-            int[] block = queue.poll();
-            System.out.println("Arrays.toString(block) = " + Arrays.toString(block));
-            int row = block[0];
-            int col = block[1];
-            int val = block[2];
-
-            //col 위치로 왼쪽 값을 구할지 오른쪽 값을 구할지 계산
-            //parent가 [row-1][col-1] 에 값이 있거나 col가 row랑 같은. 가장 오른쪽 위치인 경우 왼쪽을 채움
-            //parent가 [row-1][col] 에 값이 있거나 col가 0인. 가장 왼쪽 위치인 경우 오른쪽을 채움
-            int currIdx = pyramidLength(row) + col;
-            int leftIdx = pyramidLength(row - 1) + col - 1;
-            int rightIdx = pyramidLength(row - 1) + col;
-
-            //leftIdx, rightIdx 둘 중에 result 에 값이 있는 것을 찾기
-            int parent = 0;
-            int child = 0;
-
-            if (col == 0) {
-                parent = result[rightIdx];
-                child = currIdx + 1;
-            } else if (col == row) {
-                parent = result[leftIdx];
-                child = currIdx - 1;
-                col--;
-            } else if (result[leftIdx] == Integer.MIN_VALUE) { //오른쪽을 채움
-                parent = result[rightIdx];
-                child = currIdx + 1;
-            } else if (result[rightIdx] == Integer.MIN_VALUE) { //왼쪽을 채움
-                parent = result[leftIdx];
-                child = currIdx - 1;
-                col--;
-            } else if (result[currIdx - 1] == Integer.MIN_VALUE) {
-                parent = result[leftIdx];
-                child = currIdx - 1;
-                col--;
-            } else if (result[currIdx + 1] == Integer.MIN_VALUE) {
-                parent = result[rightIdx];
-                child = currIdx + 1;
+        int k = 0;
+        int[] answer = new int[pyramidLength(blocks.length)];
+        for (int i = 0; i < blocks.length; i++) {
+            for (int j = 0; j < i+1; j++) {
+                answer[k++] = result[i][j];
             }
-            if (result[child] == Integer.MIN_VALUE) {
-                result[child] = parent - val;
-                queue.add(new int[]{row, col, result[child]});
-            } else {
-                //해당 row를 다 채워서, 다음 row로 넘어가야할 때..
-                queue.add(new int[]{++blockIdx,blocks[blockIdx][0], blocks[blockIdx][1]});
-            }
-            System.out.println("parent = " + parent);
         }
-
-        return result;
+        return answer;
     }
 
     public static int pyramidLength(int n) {
@@ -100,7 +59,7 @@ public class W7FillingPyramid {
         });
         System.out.println("result1 = " + Arrays.toString(result1));
         int[] result2 = solve(new int[][]{
-                {0, 92}, {1, 20}, {2, 11}, {1, -81}, {3, 98}
+                {0, 63},{0, 77},{1, -80},{3, 12},{4, 37}
         });
         System.out.println("result2 = " + Arrays.toString(result2));
     }
