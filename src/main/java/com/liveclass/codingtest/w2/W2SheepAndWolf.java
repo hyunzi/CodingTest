@@ -27,8 +27,6 @@ public class W2SheepAndWolf {
             list.get(arr[0]).add(arr[1]);
         }
 
-
-
         boolean[] visited = new boolean[info.length];
         for (int i = 0; i < visited.length; i++) {
             if (visited[i] == false) {

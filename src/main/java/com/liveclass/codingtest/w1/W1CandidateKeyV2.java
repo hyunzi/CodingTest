@@ -8,10 +8,12 @@ public class W1CandidateKeyV2 {
 
     public static int solution(String[][] relation) {
 
-        //[생각의 흐름]
-        //1. 컬럼으로 후보키의 조합을 구하자 (후보키가 될 수 있는 목록을 구해야 함)
-        //2. 그 키가 전체 튜플을 유일하게 식별하는지 확인하자
-        //3. 단, 모든 튜플을 식별하는데 다른 조합에 포함되는 조합이면 빠져야함 (최소성!)
+        /*
+        * 생각의 흐름
+        * 1. 컬럼으로 후보키의 조합을 구하자 (후보키가 될 수 있는 목록을 구해야 함)
+        * 2. 그 키가 전체 튜플을 유일하게 식별하는지 확인하자
+        * 3. 단, 모든 튜플을 식별하는데 다른 조합에 포함되는 조합이면 빠져야함 (최소성!)
+        * */
 
         int answer = 0;
 
@@ -63,7 +65,7 @@ public class W1CandidateKeyV2 {
             //최소성 체크 (유일성 만족하는 것 중에)
             if (tupleList.size() == relation.length) {
                 long containCnt = answers.stream()
-                        .filter(c -> columns.containsAll(c))
+                        .filter(columns::containsAll)
                         .count();
 
                 //다른 answers에 포함되지 않는 경우만 후보키가 됨

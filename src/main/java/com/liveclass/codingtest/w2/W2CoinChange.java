@@ -77,5 +77,6 @@ public class W2CoinChange {
 
     public static void main(String[] args) {
         System.out.println("결과: "+newCoinChange(new int[]{3,4,5}, 10));
+        System.out.println("결과: "+newCoinChange(new int[]{3,4,5}, 15));
     }
 }
