@@ -38,6 +38,8 @@ public class W2CoinChangeNew {
         System.out.println("결과: "+coinChange(new int[]{1,1,1}, 15));
     }
 
+
+    // 안쓰고 그냥 배열이 더 편함..
     static class Entry {
         int amount;
         int count;

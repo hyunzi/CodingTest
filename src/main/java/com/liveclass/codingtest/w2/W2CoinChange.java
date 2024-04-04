@@ -69,7 +69,6 @@ public class W2CoinChange {
             }
             count++;
             list.remove(amount);
-            System.out.println(list);
         }
 
         return -1;
@@ -77,6 +76,8 @@ public class W2CoinChange {
 
     public static void main(String[] args) {
         System.out.println("결과: "+newCoinChange(new int[]{3,4,5}, 10));
-        System.out.println("결과: "+newCoinChange(new int[]{3,4,5}, 15));
+        System.out.println("결과: "+newCoinChange(new int[]{2}, 3));
+        System.out.println("결과: "+newCoinChange(new int[]{1,2,3}, 15));
+        System.out.println("결과: "+newCoinChange(new int[]{1,1,1}, 15));
     }
 }
