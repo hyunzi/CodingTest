@@ -3,7 +3,7 @@ package com.liveclass.codingtest.w2;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-public class W2CoinChangeNew {
+public class W2CoinChangeV2 {
 
     /* Site URL: https://leetcode.com/problems/coin-change */
     public static int coinChange(int[] coins, int amount) {

@@ -1,8 +1,6 @@
 package com.liveclass.codingtest.w2;
 
-import java.util.*;
-
-public class W2SheepAndWolfNew {
+public class W2SheepAndWolfV2 {
 
     /* Site URL: https://school.programmers.co.kr/learn/courses/30/lessons/92343 */
 
