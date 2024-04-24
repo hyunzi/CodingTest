@@ -16,12 +16,12 @@ public class W3MovingBlock {
         //Depth 도 같이 저장. N,N에 도달했을 때 Depth 가장 작은 수를 출력
 
 
-        int[][] bot = new int[][]{{0,0},{0,1},{0}};
-        int m = board.length-1;
-        int[] xRow = {0,0,-1,1,-1,1};   //좌,우,A기준상,A기준하,B기준상,B기준하 --가로로봇
-        int[] xCol = {-1,1,-1,-1,1,1};  //좌,우,A기준상,A기준하,B기준상,B기준하 --가로로봇
-        int[] yRow = {-1,1,-1,-1,1,1};  //상,하,A기준좌,A기준우,B기준좌,B기준우 --세로로봇
-        int[] yCol = {0,0,-1,1,-1,1};   //상,하,A기준좌,A기준우,B기준좌,B기준우 --세로로봇
+        int[][] bot = new int[][]{{0, 0}, {0, 1}, {0}};
+        int m = board.length - 1;
+        int[] xRow = {0, 0, -1, 1, -1, 1};   //좌,우,A기준상,A기준하,B기준상,B기준하 --가로로봇
+        int[] xCol = {-1, 1, -1, -1, 1, 1};  //좌,우,A기준상,A기준하,B기준상,B기준하 --가로로봇
+        int[] yRow = {-1, 1, -1, -1, 1, 1};  //상,하,A기준좌,A기준우,B기준좌,B기준우 --세로로봇
+        int[] yCol = {0, 0, -1, 1, -1, 1};   //상,하,A기준좌,A기준우,B기준좌,B기준우 --세로로봇
 
         ArrayList<String> visited = new ArrayList<String>();
         visited.add(Arrays.toString(bot[0]) + Arrays.toString(bot[1]));
@@ -30,10 +30,6 @@ public class W3MovingBlock {
         queue.add(bot);
 
         while (!queue.isEmpty()) {
-            /*System.out.print("queue: ");
-            for (int[][] q : queue)
-                System.out.print(Arrays.toString(q[0])+","+Arrays.toString(q[1])+","+Arrays.toString(q[2])+" -> ");
-            System.out.println();*/
 
             int[][] currBot = queue.poll();
             int[][] nextBot = new int[currBot.length][currBot[0].length];
@@ -45,8 +41,8 @@ public class W3MovingBlock {
 
             //항상 bot[0] 이 왼쪽이나 위쪽에 있도록 하고 싶었는데.. 이게 문제인가
             if (currBot[1][1] < currBot[0][1] || currBot[1][0] < currBot[0][0]) {
-                int[][] tmpBot = new int[][]{{currBot[1][0], currBot[1][1]},{currBot[0][0],currBot[0][1]},{currBot[2][0]}};
-                currBot = new int[][]{{tmpBot[0][0], tmpBot[0][1]},{tmpBot[1][0],tmpBot[1][1]},{tmpBot[2][0]}};
+                int[][] tmpBot = new int[][]{{currBot[1][0], currBot[1][1]}, {currBot[0][0], currBot[0][1]}, {currBot[2][0]}};
+                currBot = new int[][]{{tmpBot[0][0], tmpBot[0][1]}, {tmpBot[1][0], tmpBot[1][1]}, {tmpBot[2][0]}};
             }
 
             for (int k = 0; k < xRow.length; k++) {
@@ -90,7 +86,7 @@ public class W3MovingBlock {
                     for (int t = 0; t < nextBot.length; t++) {
                         System.arraycopy(nextBot[t], 0, tmpBot[t], 0, tmpBot[t].length);
                     }
-                    tmpBot[2][0] = currBot[2][0]+1;
+                    tmpBot[2][0] = currBot[2][0] + 1;
                     queue.add(tmpBot);
                     visited.add(Arrays.toString(nextBot[0]) + Arrays.toString(nextBot[1]));
                     visited.add(Arrays.toString(nextBot[1]) + Arrays.toString(nextBot[0]));
@@ -100,6 +96,7 @@ public class W3MovingBlock {
 
         return answer;
     }
+
     public static boolean isUpDownBot(int[][] bot) {
         if (bot[0][0] == bot[1][0] && bot[0][1] != bot[1][1]) { //가로 Bot
             return false;
@@ -109,12 +106,12 @@ public class W3MovingBlock {
         return false;
     }
 
-    public static boolean isValid(int[][] bot, int[][] board, ArrayList<String> visited) {
+    private static boolean isValid(int[][] bot, int[][] board, ArrayList<String> visited) {
         int len = board.length;
-        if ((bot[0][0] >=0 && bot[0][0] < len && bot[0][1] >= 0 && bot[0][1] < len)
-            && (bot[1][0] >=0 && bot[1][0] < len && bot[1][1] >= 0 && bot[1][1] < len)
-            && board[bot[0][0]][bot[0][1]] == 0 && board[bot[1][0]][bot[1][1]] == 0
-            && !visited.contains(Arrays.toString(bot[0]) + Arrays.toString(bot[1]))) {
+        if ((bot[0][0] >= 0 && bot[0][0] < len && bot[0][1] >= 0 && bot[0][1] < len)
+                && (bot[1][0] >= 0 && bot[1][0] < len && bot[1][1] >= 0 && bot[1][1] < len)
+                && board[bot[0][0]][bot[0][1]] == 0 && board[bot[1][0]][bot[1][1]] == 0
+                && !visited.contains(Arrays.toString(bot[0]) + Arrays.toString(bot[1]))) {
             return true;
         }
         return false;
